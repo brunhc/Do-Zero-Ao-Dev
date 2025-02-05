@@ -400,8 +400,6 @@ FodyWeavers.xsd
 *.sln.iml
 
 .DS_Store
-/dist
-
 
 # local env files
 .env.local
