@@ -256,6 +256,50 @@ function atualizarPreco2(event: Event) {
   margin-bottom: 40px;
 }
 
+/* 📱 MEDIA QUERY PARA CELULAR */
+@media (max-width: 768px) {
+  .produtos-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .produto1, .produto2 {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .quantidade-inputs {
+    flex-wrap: wrap;
+  }
+  
+  input[type="number"] {
+    width: 100%;
+  }
+  
+  select {
+    width: 100%;
+  }
+  
+  .valores-base {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .resultado-conversao {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Ajusta fonte para celular */
+  h2 {
+    font-size: 1.3rem;
+  }
+  
+  .melhor-opcao h3 {
+    font-size: 1.2rem;
+  }
+}
+
 .produto1, .produto2 {
   flex: 1;
   padding: 20px;
