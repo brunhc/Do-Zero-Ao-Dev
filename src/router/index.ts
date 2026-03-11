@@ -28,9 +28,9 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory('/Do-Zero-Ao-Dev/'),
     routes,
-  });
+});
   
 
 export default router;
