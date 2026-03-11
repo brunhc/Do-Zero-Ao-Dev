@@ -1,0 +1,5 @@
+{
+    "vscode-autoGit.enabled": true,
+    "vscode-autoGit.syncInterval": 30,
+    "vscode-autoGit.debounceIntervalSeconds": 60
+}
