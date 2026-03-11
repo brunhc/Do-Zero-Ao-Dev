@@ -1,7 +1,8 @@
-import Home from '@/views/Home.vue'; // Exemplo de componente existente
-import Projetos from '@/views/Projetos.vue'; // Página de projetos
+import Home from '@/views/Home.vue';
+import Projetos from '@/views/Projetos.vue';
 import CalculadoraRPA from '@/views/projetos/CalculadoraRPA.vue';
 import ConversorPrecos from '@/views/projetos/ConversorPrecos.vue';
+import PrecoPorHoraTrabalhada from '@/views/projetos/PrecoPorHoraTrabalhada.vue'; // NOVO IMPORT
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -11,7 +12,7 @@ const routes = [
     component: Home,
   },
   {
-    path: '/projetos', // Rota para a página de projetos
+    path: '/projetos',
     name: 'Projetos',
     component: Projetos,
   },
@@ -24,13 +25,17 @@ const routes = [
     path: '/calculadora-rpa',
     name: 'Calculadora RPA Bidirecional',
     component: CalculadoraRPA,
+  },
+  {
+    path: '/preco-por-hora', // NOVA ROTA
+    name: 'Preço por Hora Trabalhada',
+    component: PrecoPorHoraTrabalhada,
   }
 ];
 
 const router = createRouter({
-    history: createWebHistory('/Do-Zero-Ao-Dev/'),
-    routes,
+  history: createWebHistory('/Do-Zero-Ao-Dev/'),
+  routes,
 });
-  
 
 export default router;
