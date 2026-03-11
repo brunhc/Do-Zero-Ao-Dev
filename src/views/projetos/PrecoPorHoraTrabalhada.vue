@@ -129,12 +129,12 @@
           
           <div class="comparativo-item">
             <span>Em dias de trabalho:</span>
-            <strong>{{ diasTrabalho }} dia{{ diasTrabalho !== 1 ? 's' : '' }}</strong>
+            <strong>{{ diasTrabalho }} dia{{ diasTrabalho !== '1' ? 's' : '' }}</strong>
           </div>
           
-          <div class="comparativo-item" v-if="diasTrabalho > 1">
+          <div class="comparativo-item" v-if="parseFloat(diasTrabalho) > 1">
             <span>Equivalente a:</span>
-            <strong>{{ semanasTrabalho }} semana{{ semanasTrabalho !== 1 ? 's' : '' }}</strong>
+            <strong>{{ semanasTrabalho }} semana{{ semanasTrabalho !== '1' ? 's' : '' }}</strong>
           </div>
           
           <div class="comparativo-item">
@@ -159,14 +159,9 @@
           </ul>
         </div>
 
-        <!-- Mensagem motivacional -->
-        <div class="mensagem-motivacional" :class="{ 'caro': percentualSalario > 10, 'barato': percentualSalario < 1 }">
-          <p v-if="percentualSalario < 0.5">🌟 É muito barato! Menos de 1% do seu salário!</p>
-          <p v-else-if="percentualSalario < 1">✨ É bem acessível! Cerca de 1% do seu salário.</p>
-          <p v-else-if="percentualSalario < 5">👍 Cabe no orçamento! Menos de 5% do seu salário.</p>
-          <p v-else-if="percentualSalario < 10">🤔 É um gasto moderado. Pense bem antes de comprar.</p>
-          <p v-else-if="percentualSalario < 20">⚠️ É um gasto significativo! Quase {{ percentualSalario.toFixed(1) }}% do seu salário.</p>
-          <p v-else>🔥 É um investimento pesado! Mais de 20% do seu salário.</p>
+        <!-- Mensagem motivacional corrigida -->
+        <div class="mensagem-motivacional" :class="classeMotivacional">
+          <p>{{ mensagemMotivacional }}</p>
         </div>
       </div>
 
@@ -239,7 +234,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 
-// ============ DADOS REATIVOS ============
+// ============ DADOS REATIVOS COM TIPAGEM CORRETA ============
 const tipoSalario = ref<'bruto' | 'liquido'>('liquido');
 const salarioTexto = ref<string>('3.000,00');
 const salarioNumerico = ref<number>(3000);
@@ -316,21 +311,21 @@ function formatarProduto() {
   }
 }
 
-// ============ PROPRIEDADES COMPUTADAS ============
-const tituloSalario = computed(() => {
+// ============ PROPRIEDADES COMPUTADAS CORRIGIDAS ============
+const tituloSalario = computed<string>(() => {
   return tipoSalario.value === 'bruto' 
     ? '💰 Informe seu salário bruto'
     : '💵 Informe seu salário líquido';
 });
 
-const labelSalario = computed(() => {
+const labelSalario = computed<string>(() => {
   return tipoSalario.value === 'bruto' 
     ? 'Salário Bruto'
     : 'Salário Líquido';
 });
 
-const valorSalario = computed(() => salarioNumerico.value);
-const valorProduto = computed(() => produtoNumerico.value);
+const valorSalario = computed<number>(() => salarioNumerico.value);
+const valorProduto = computed<number>(() => produtoNumerico.value);
 
 // Estimativa de salário líquido (para salário bruto)
 const salarioLiquidoEstimado = computed<number>(() => {
@@ -417,10 +412,32 @@ const percentualSalario = computed<string>(() => {
   return ((produto / salario) * 100).toFixed(1);
 });
 
+// Mensagem motivacional
+const mensagemMotivacional = computed<string>(() => {
+  const percentual = parseFloat(percentualSalario.value) || 0;
+  
+  if (percentual < 0.5) return '🌟 É muito barato! Menos de 1% do seu salário!';
+  if (percentual < 1) return '✨ É bem acessível! Cerca de 1% do seu salário.';
+  if (percentual < 5) return '👍 Cabe no orçamento! Menos de 5% do seu salário.';
+  if (percentual < 10) return '🤔 É um gasto moderado. Pense bem antes de comprar.';
+  if (percentual < 20) return `⚠️ É um gasto significativo! Quase ${percentual.toFixed(1)}% do seu salário.`;
+  return '🔥 É um investimento pesado! Mais de 20% do seu salário.';
+});
+
+const classeMotivacional = computed<string>(() => {
+  const percentual = parseFloat(percentualSalario.value) || 0;
+  
+  if (percentual < 1) return 'barato';
+  if (percentual > 10) return 'caro';
+  return '';
+});
+
 // Função para exemplos na tabela
 function calcularExemplo(preco: number): string {
-  if (valorHora.value === 0) return '-';
-  const horas = preco / valorHora.value;
+  const hora = valorHora.value;
+  if (hora === 0) return '-';
+  
+  const horas = preco / hora;
   
   if (horas < 1) {
     return `${Math.round(horas * 60)} min`;
@@ -432,6 +449,11 @@ function calcularExemplo(preco: number): string {
   if (mins === 0) return `${hrs}h`;
   return `${hrs}h${mins}`;
 }
+
+// ============ WATCH ============
+watch([tipoSalario, salarioNumerico, produtoNumerico, horasPorDia, diasPorMes], () => {
+  // Apenas para garantir reatividade
+});
 </script>
 
 <style scoped>
