@@ -4,7 +4,7 @@
       <p>Esta é a página onde listarei meus projetos.</p>
       <ul>
         <li><a href="/conversor-precos">Conversor</a></li>
-        <li><a href="#">Projeto 2</a></li>
+        <li><a href="/calculadora-rpa">Calculadora RPA Bidirecional</a></li>
         <li><a href="#">Projeto 3</a></li>
       </ul>
     </div>

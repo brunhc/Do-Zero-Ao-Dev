@@ -1,5 +1,6 @@
 import Home from '@/views/Home.vue'; // Exemplo de componente existente
 import Projetos from '@/views/Projetos.vue'; // Página de projetos
+import CalculadoraRPA from '@/views/projetos/CalculadoraRPA.vue';
 import ConversorPrecos from '@/views/projetos/ConversorPrecos.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -18,6 +19,11 @@ const routes = [
     path: '/conversor-precos',
     name: 'Conversor de preços',
     component: ConversorPrecos,
+  },
+  {
+    path: '/calculadora-rpa',
+    name: 'Calculadora RPA Bidirecional',
+    component: CalculadoraRPA,
   }
 ];
 
