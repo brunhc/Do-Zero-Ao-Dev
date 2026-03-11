@@ -333,53 +333,63 @@ const valorSalario = computed(() => salarioNumerico.value);
 const valorProduto = computed(() => produtoNumerico.value);
 
 // Estimativa de salário líquido (para salário bruto)
-const salarioLiquidoEstimado = computed(() => {
+const salarioLiquidoEstimado = computed<number>(() => {
   if (tipoSalario.value === 'liquido') return valorSalario.value;
   
+  // Garante que valorSalario é número
+  const salario = Number(valorSalario.value) || 0;
+  
   // Cálculo aproximado: bruto - INSS - IRRF médio
-  const inss = valorSalario.value * ALIQUOTA_INSS;
-  const baseIRRF = valorSalario.value - inss;
+  const inss = salario * ALIQUOTA_INSS;
+  const baseIRRF = salario - inss;
   const irrfEstimado = baseIRRF * ALIQUOTA_IRRF_MEDIA;
   
-  return Math.max(0, valorSalario.value - inss - irrfEstimado);
+  return Math.max(0, salario - inss - irrfEstimado);
 });
 
 // Salário considerado para cálculo (sempre líquido)
-const salarioParaCalculo = computed(() => {
-  if (tipoSalario.value === 'liquido') return valorSalario.value;
-  return salarioLiquidoEstimado.value;
+const salarioParaCalculo = computed<number>(() => {
+  if (tipoSalario.value === 'liquido') return Number(valorSalario.value) || 0;
+  return Number(salarioLiquidoEstimado.value) || 0;
 });
 
 // Total de horas trabalhadas no mês
-const horasPorMes = computed(() => {
-  return horasPorDia.value * diasPorMes.value;
+const horasPorMes = computed<number>(() => {
+  const horas = Number(horasPorDia.value) || 0;
+  const dias = Number(diasPorMes.value) || 0;
+  return horas * dias;
 });
 
 // Valor da hora de trabalho
-const valorHora = computed(() => {
-  if (horasPorMes.value === 0 || salarioParaCalculo.value === 0) return 0;
-  return salarioParaCalculo.value / horasPorMes.value;
+const valorHora = computed<number>(() => {
+  const horas = horasPorMes.value;
+  const salario = salarioParaCalculo.value;
+  if (horas === 0 || salario === 0) return 0;
+  return salario / horas;
 });
 
 // Horas necessárias para comprar o produto
-const horasNecessarias = computed(() => {
-  if (valorHora.value === 0 || valorProduto.value === 0) return 0;
-  return valorProduto.value / valorHora.value;
+const horasNecessarias = computed<number>(() => {
+  const hora = valorHora.value;
+  const produto = Number(valorProduto.value) || 0;
+  if (hora === 0 || produto === 0) return 0;
+  return produto / hora;
 });
 
 // Formatação do resultado em horas e minutos
-const horasInteiras = computed(() => {
+const horasInteiras = computed<number>(() => {
   return Math.floor(horasNecessarias.value);
 });
 
-const minutosRestantes = computed(() => {
+const minutosRestantes = computed<number>(() => {
   const minutosDecimais = (horasNecessarias.value - horasInteiras.value) * 60;
   return Math.round(minutosDecimais);
 });
 
-const resultadoHoras = computed(() => {
-  if (horasNecessarias.value < 1) {
-    const minutos = Math.round(horasNecessarias.value * 60);
+const resultadoHoras = computed<string>(() => {
+  const horas = horasNecessarias.value;
+  if (horas < 1) {
+    const minutos = Math.round(horas * 60);
     return `${minutos} minuto${minutos !== 1 ? 's' : ''}`;
   }
   
@@ -391,18 +401,20 @@ const resultadoHoras = computed(() => {
 });
 
 // Dias de trabalho
-const diasTrabalho = computed(() => {
-  return (horasNecessarias.value / horasPorDia.value).toFixed(1);
+const diasTrabalho = computed<string>(() => {
+  return (horasNecessarias.value / Number(horasPorDia.value || 1)).toFixed(1);
 });
 
-const semanasTrabalho = computed(() => {
+const semanasTrabalho = computed<string>(() => {
   return (parseFloat(diasTrabalho.value) / 5).toFixed(1);
 });
 
 // Percentual do salário
-const percentualSalario = computed(() => {
-  if (salarioParaCalculo.value === 0) return 0;
-  return ((valorProduto.value / salarioParaCalculo.value) * 100).toFixed(1);
+const percentualSalario = computed<string>(() => {
+  const salario = salarioParaCalculo.value;
+  const produto = Number(valorProduto.value) || 0;
+  if (salario === 0) return '0';
+  return ((produto / salario) * 100).toFixed(1);
 });
 
 // Função para exemplos na tabela
